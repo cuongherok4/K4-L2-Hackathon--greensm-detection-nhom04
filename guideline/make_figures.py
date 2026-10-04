@@ -137,20 +137,27 @@ pos = [
 cards = [card(crop(load(n), G[k], boxes=[(G[k], GREEN, 3, False)]), "GÁN NHÃN", GREEN, cap) for n, k, cap in pos]
 save(grid(cards, 3, "GreenSM: các góc nhìn cần GÁN (hộp xanh lá = hộp đúng)"), "01_greensm_gallery.jpg")
 
-# 2) Không phải GreenSM
+# 2) Không phải GreenSM. Panel nào lọt GreenSM thật vào khung thì đóng hộp xanh cho nó (không để xe GreenSM trần
+#    trong hình minh hoạ, tránh dạy người gán rằng được bỏ sót).
+GSM007_MID = (244, 248, 358, 297)   # SMP007: GreenSM sau xe trắng + xe máy (đã zoom kiểm)
+GSM007_RIGHT = (592, 249, 688, 310)  # SMP007: GreenSM nhìn từ sau, cạnh xe đỏ (đã zoom kiểm)
 neg = [
-    ("SMP007", (29, 250, 247, 414), ["VinFast màu vàng: cùng dáng xe,", "KHÁC màu -> không gán"]),
-    ("SMP008", (464, 318, 1020, 521), ["Sedan xanh dương: màu gần giống,", "đậm hơn, không logo -> không gán"]),
-    ("SMP001", (823, 117, 1038, 231), ["Xe xanh đậm / xanh rêu:", "không phải xanh ngọc -> không gán"]),
-    ("SMP006", (0, 360, 310, 584), ["Xe máy điện màu xanh", "(kể cả Xanh SM Bike) -> không gán"]),
-    ("SMP010", (173, 183, 436, 305), ["VinFast trắng (xe cá nhân)", "-> không gán"]),
-    ("SMP007", (378, 250, 582, 323), ["Xe đỏ, xe hãng khác", "-> không gán"]),
+    ("SMP007", (29, 250, 247, 414), (29, 240, 362, 414), [GSM007_MID],
+     ["VinFast vàng: cùng dáng, KHÁC màu.", "Xe xanh ngọc phía sau: VẪN GÁN"]),
+    ("SMP008", (464, 318, 1020, 521), None, [], ["Sedan xanh dương: màu gần giống,", "đậm hơn, không logo -> không gán"]),
+    ("SMP001", (823, 117, 1038, 231), None, [], ["Xe xanh đậm / xanh rêu:", "không phải xanh ngọc -> không gán"]),
+    ("SMP006", (0, 360, 310, 584), (0, 204, 638, 584), [G["smp006_main"]],
+     ["Xe máy điện xanh, kể cả Xanh SM Bike:", "không gán. Ô tô xanh ngọc: gán"]),
+    ("SMP010", (173, 183, 436, 305), None, [], ["VinFast trắng (xe cá nhân)", "-> không gán"]),
+    ("SMP007", (378, 250, 582, 323), (378, 240, 692, 323), [GSM007_RIGHT],
+     ["Xe đỏ, xe hãng khác -> không gán.", "Xe xanh ngọc bên cạnh: VẪN GÁN"]),
 ]
 cards = []
-for n, bx, cap in neg:
-    im = crop(load(n), bx, pad=0.12, boxes=[(bx, RED, 3, True)])
-    cards.append(card(im, "KHÔNG GÁN", RED, cap))
-save(grid(cards, 3, "Dễ nhầm nhưng KHÔNG phải GreenSM (để trống, coi là nền)"), "02_not_greensm.jpg")
+for n, bx, win, gsm, cap in neg:
+    im = crop(load(n), win or bx, pad=0.03 if win else 0.12,
+              boxes=[(bx, RED, 3, True)] + [(g, GREEN, 3, False) for g in gsm])
+    cards.append(card(im, "KHÔNG GÁN XE VIỀN ĐỎ" if gsm else "KHÔNG GÁN", RED, cap))
+save(grid(cards, 3, "Dễ nhầm nhưng KHÔNG phải GreenSM (viền đỏ nét đứt = không vẽ hộp)"), "02_not_greensm.jpg")
 
 # 3) Vùng xám: xe bạc có chữ SM
 im = crop(load("SMP004"), (0, 223, 230, 572), pad=0.05, size=420, boxes=[((0, 223, 230, 572), ORANGE, 4, True)])
@@ -169,10 +176,10 @@ p_ok = card(crop(img, win, pad=0, boxes=[(b, GREEN, 3, False)]), "ĐÚNG", GREEN
             ["Sát mép trái/phải/trên/dưới,", "tính cả gương và lốp chạm đất"])
 v = iou(loose, b)
 p_lo = card(crop(img, win, pad=0, boxes=[(b, GREEN, 1, True), (loose, RED, 3, False)]), "SAI: HỘP LỎNG", RED,
-            [f"Dư ~10% mỗi phía -> IoU {v:.2f}", f"chỉ đạt {n_thr(v)}/10 ngưỡng chấm"])
+            [f"Dư ~10% mỗi phía -> IoU {v:.3f}", f"chỉ đạt {n_thr(v)}/10 ngưỡng chấm"])
 v2 = iou(cut, b)
 p_cu = card(crop(img, win, pad=0, boxes=[(b, GREEN, 1, True), (cut, RED, 3, False)]), "SAI: CẮT MẤT", RED,
-            [f"Hụt gương, cản, lốp -> IoU {v2:.2f}", f"chỉ đạt {n_thr(v2)}/10 ngưỡng chấm"])
+            [f"Hụt gương, cản, lốp -> IoU {v2:.3f}", f"chỉ đạt {n_thr(v2)}/10 ngưỡng chấm"])
 save(grid([p_ok, p_lo, p_cu], 3, "Hộp phải ÔM SÁT: điểm chấm mAP@[.5:.95] phạt cả hộp lỏng lẫn hộp hụt"), "04_box_tightness.jpg")
 
 # 5) Xe nhỏ: lệch 3 px đã mất điểm
@@ -182,9 +189,9 @@ vt = iou(t_sh, t)
 big_sh = (b[0] + 3, b[1], b[2] + 3, b[3])
 vb = iou(big_sh, b)
 p1 = card(crop(load("SMP001"), t, pad=1.2, size=420, boxes=[(t, GREEN, 3, False), (t_sh, RED, 2, True)]),
-          f"XE NHỎ 26 px: LỆCH 3 px", RED, [f"IoU {vt:.2f} -> {n_thr(vt)}/10 ngưỡng", "Zoom 300-400% khi vẽ xe nhỏ!"], w=440)
+          f"XE NHỎ 26 px: LỆCH 3 px", RED, [f"IoU {vt:.3f} -> {n_thr(vt)}/10 ngưỡng", "Zoom 300-400% khi vẽ xe nhỏ!"], w=440)
 p2 = card(crop(load("SMP005"), b, pad=0.15, size=420, boxes=[(b, GREEN, 3, False), (big_sh, RED, 2, True)]),
-          f"XE LỚN 300 px: LỆCH 3 px", GREEN, [f"IoU {vb:.2f} -> {n_thr(vb)}/10 ngưỡng", "Xe lớn chịu sai số tốt hơn"], w=440)
+          f"XE LỚN 300 px: LỆCH 3 px", GREEN, [f"IoU {vb:.3f} -> {n_thr(vb)}/10 ngưỡng", "Xe lớn chịu sai số tốt hơn"], w=440)
 save(grid([p1, p2], 2, "Cùng lệch 3 pixel: xe nhỏ mất điểm nặng, xe lớn gần như không sao"), "05_small_box_precision.jpg")
 
 # 6) Xe nhỏ ở xa: toàn ảnh + phóng to
@@ -233,7 +240,7 @@ e1 = card(crop(load("SMP001"), (823, 117, 1038, 231), pad=0.1, size=360, boxes=[
           "NHÁP SAI -> XOÁ", RED, ["Máy nhận xe xanh đậm", "là GreenSM"])
 e2 = card(crop(load("SMP005"), (71, 240, 190, 295), pad=0.25, size=360, boxes=[((145, 247, 181, 286), ORANGE, 3, True), (G["smp005_left"], GREEN, 3, False)]),
           "XOÁ CAM, GIỮ XANH", RED, ["Hộp nhỏ dính sang xe xanh dương", "bên cạnh -> xoá"])
-e3 = card(crop(load("SMP007"), (240, 240, 362, 300), pad=0.3, size=360, boxes=[((243, 250, 309, 298), ORANGE, 2, True), ((244, 247, 358, 298), ORANGE, 2, True), ((263, 245, 294, 265), ORANGE, 2, True)]),
-          "NHÁP TRÙNG -> GỘP 1", RED, ["3 hộp chồng trên 1 xe bị che:", "giữ 1 hộp đúng, xoá phần trùng"])
+e3 = card(crop(load("SMP007"), (240, 240, 362, 300), pad=0.3, size=360, boxes=[((243, 250, 309, 298), ORANGE, 2, True), ((244, 247, 358, 298), ORANGE, 2, True), ((263, 245, 294, 265), ORANGE, 2, True), (GSM007_MID, GREEN, 3, False)]),
+          "NHÁP TRÙNG -> GỘP 1", RED, ["3 hộp cam chồng trên 1 xe bị che:", "giữ/chỉnh thành 1 hộp xanh, xoá phần trùng"])
 save(grid([e1, e2, e3], 3, "Nhãn nháp của máy hay sai kiểu này (cam = nháp, xanh = đúng)"), "11_prelabel_errors.jpg")
 print("done")

@@ -3,7 +3,7 @@
 Thành viên: Hoàng Mạnh Cường · Hoàng Văn Long · Trịnh Nam Trung
 
 ## Đọc gì trước
-1. [guideline/GUIDELINE_v1.md](guideline/GUIDELINE_v1.md) — **guideline gán nhãn** (có hình). Bản xem offline: `guideline/GUIDELINE_v1.html` (tải về rồi mở bằng trình duyệt).
+1. `guideline/GUIDELINE.html`: **guideline gán nhãn** (có hình), bản duy nhất. Clone repo rồi mở file bằng trình duyệt (ảnh nằm ở `guideline/img/`, đừng tách file ra riêng).
 2. [docs/KE-HOACH-THUC-THI.md](docs/KE-HOACH-THUC-THI.md) — các bước thực thi, ai làm gì, mốc giờ, căn cứ thể lệ.
 3. [docs/CHIEN-LUOC-GREENSM.md](docs/CHIEN-LUOC-GREENSM.md) — lý do kỹ thuật của từng lựa chọn.
 4. [tools/README_TOOLS.md](tools/README_TOOLS.md) — công cụ: cắt khung → gán nháp → CVAT → dựng zip.
@@ -13,9 +13,9 @@ Thành viên: Hoàng Mạnh Cường · Hoàng Văn Long · Trịnh Nam Trung
 |---|---|
 | `guideline/` | Guideline + hình minh hoạ + script dựng hình |
 | `docs/` | Chiến lược, kế hoạch thực thi |
-| `tools/` | `extract_frames.py`, `prelabel.py`, `make_cvat_import.py`, `build_dataset.py` |
+| `tools/` | `extract_frames.py`, `prelabel.py`, `make_cvat_import.py`, `build_dataset.py`, `review_stats.py` |
 | `notebooks/` | Notebook chính thức của BTC (`train_and_export.ipynb`, **không sửa ô Bước 3**) |
-| `logs/` | `labeling_log.csv`, `metrics.csv`, `datasets.csv` — bằng chứng cho slide và tái lập |
+| `logs/` | `labeling_log.csv` (chỉ ảnh `exclude`), `review_stats.csv`, `metrics.csv`, `datasets.csv` — bằng chứng cho slide và tái lập |
 | `qa/` | Biên bản hiệu chuẩn, kiểm chéo, phân tích lỗi |
 | `evidence/` | Ảnh chụp màn hình CVAT trước/sau sửa, bảng điểm |
 

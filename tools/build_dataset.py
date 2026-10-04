@@ -144,6 +144,16 @@ def collect(sources, pools, tmp_root):
     return items
 
 
+def read_excludes(log_path):
+    """Ten anh (stem) co action=exclude trong labeling_log.csv (guideline muc 9)."""
+    p = Path(log_path)
+    if not log_path or not p.exists():
+        return set()
+    with p.open(newline="", encoding="utf-8-sig") as f:
+        return {Path(r["image"].strip()).stem for r in csv.DictReader(f)
+                if (r.get("action") or "").strip().lower() == "exclude" and (r.get("image") or "").strip()}
+
+
 def check_labels(stem, img, lab, a):
     """Kiem tra 1 anh. Tra ve (lines_sach, problems, warnings, boxes_px, (w,h))."""
     w, h = image_size(img)
@@ -258,6 +268,8 @@ def main():
     ap.add_argument("--min-px", type=float, default=8, help="canh bao hop co canh ngan < N px (anh goc)")
     ap.add_argument("--dup-iou", type=float, default=0.9)
     ap.add_argument("--clip-eps", type=float, default=0.002, help="toa do lech [0,1] it hon eps -> tu cat")
+    ap.add_argument("--exclude-log", default="logs/labeling_log.csv",
+                    help="bo cac anh co action=exclude trong file nay (vung xam, khong chac); '' = tat")
     ap.add_argument("--log", default="logs/datasets.csv")
     ap.add_argument("--note", default="", help="ghi chu cho dong log (vd 'vong 2: them 120 anh am tinh kho')")
     a = ap.parse_args()
@@ -267,6 +279,15 @@ def main():
     tmp_root = Path(tempfile.mkdtemp(prefix="build_ds_"))
     try:
         items = collect(a.sources, a.image_pool, tmp_root)
+        excl = read_excludes(a.exclude_log)
+        hit = [st for st in items if st in excl]
+        for st in hit:
+            del items[st]
+        if excl:
+            print(f"Loai {len(hit)} anh theo {a.exclude_log} (action=exclude)"
+                  + (f"; {len(excl) - len(hit)} ten trong log khong co trong nguon" if len(excl) > len(hit) else ""))
+        elif a.exclude_log:
+            print(f"[CANH BAO] Khong doc duoc anh exclude nao tu '{a.exclude_log}' -> kiem lai duong dan neu nhom co loai anh")
         if len(items) < 2:
             sys.exit(f"Can it nhat 2 anh (co {len(items)}).")
         clean, all_probs, warn_count, no_label, sizes = {}, [], defaultdict(int), [], {}

@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guideline GreenSM</title>
+<!-- NGUỒN DUY NHẤT của guideline (từ v1.1 không còn bản .md). Sửa trực tiếp file này.
+     Ảnh nằm ở img/ cạnh file (sinh bởi make_figures.py): mở file trong thư mục repo, đừng tách riêng.
+     Mỗi lần sửa: tăng số phiên bản ở bảng đầu trang + thêm 1 dòng ở "Lịch sử thay đổi". -->
+<style>
+:root{--bg:#f6f8f7;--fg:#17201f;--muted:#55605e;--card:#fff;--line:#d8e0de;--accent:#0b7a6e;--warn:#b45309;--info:#1d4ed8;--code:#eef3f2}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0f1514;--fg:#e6eceb;--muted:#9fb0ad;--card:#18211f;--line:#2b3735;--accent:#4fd1c0;--warn:#f0a646;--info:#8ab4ff;--code:#1f2a28}}
+:root[data-theme="dark"]{--bg:#0f1514;--fg:#e6eceb;--muted:#9fb0ad;--card:#18211f;--line:#2b3735;--accent:#4fd1c0;--warn:#f0a646;--info:#8ab4ff;--code:#1f2a28}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:1.8rem;line-height:1.25;color:var(--accent)}
+h2{margin-top:2.4rem;padding-top:.8rem;border-top:2px solid var(--line);scroll-margin-top:12px}
+h3{margin-top:1.6rem;scroll-margin-top:12px}
+figure{margin:14px 0}
+figure img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);display:block;background:#fff}
+figcaption{color:var(--muted);font-size:.88rem;margin-top:4px}
+table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;margin:12px 0;background:var(--card)}
+th,td{border:1px solid var(--line);padding:8px 10px;vertical-align:top;text-align:left}
+th{background:var(--code)}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.92em}
+pre{background:var(--code);padding:12px;border-radius:8px;overflow-x:auto}
+pre.mermaid{background:var(--card);border:1px solid var(--line);text-align:center}
+blockquote{margin:12px 0;padding:10px 14px;border-left:4px solid var(--accent);background:var(--card);border-radius:0 8px 8px 0}
+blockquote.warn{border-left-color:var(--warn)} blockquote.info{border-left-color:var(--info)}
+blockquote p{margin:.3em 0}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:16px 0}
+.toc ul{margin:6px 0 0;padding-left:0;list-style:none;columns:2;column-gap:28px}
+@media (max-width:640px){.toc ul{columns:1}}
+a{color:var(--accent)} li{margin:3px 0}
+ul:has(input[type=checkbox]){list-style:none;padding-left:4px}
+input[type=checkbox]{transform:scale(1.2);margin-right:8px}
+@media print{.toc{break-after:page} figure,table{break-inside:avoid} a{color:inherit}}
+</style>
+</head>
+<body>
+<main>
+<h1>Guideline gán nhãn GreenSM (taxi điện Xanh SM) · v1.1</h1>
+<table>
+
+<tbody>
+<tr>
+<td><strong>Mục tiêu</strong></td>
+<td>Mọi xe GreenSM trong ảnh đều có <strong>một hộp ôm sát phần nhìn thấy</strong>, không có hộp nào trên xe khác. Ba người gán cùng một ảnh phải ra cùng một kết quả.</td>
+</tr>
+<tr>
+<td><strong>Dữ liệu</strong></td>
+<td>Khung hình cắt từ video nhóm tự quay (cạnh dài 1280 px), quay ngang tầm mắt trên đường phố đô thị Việt Nam</td>
+</tr>
+<tr>
+<td><strong>Công cụ</strong></td>
+<td>CVAT · một label duy nhất <code>GreenSM</code> · shape <strong>Rectangle</strong> · export <strong>YOLO 1.1</strong></td>
+</tr>
+<tr>
+<td><strong>Lớp</strong></td>
+<td>Chỉ 1 lớp: <code>0 = GreenSM</code>. Không tạo lớp khác.</td>
+</tr>
+<tr>
+<td><strong>Nguyên tắc vàng</strong></td>
+<td>① Không sót xe GreenSM nào ② Hộp sát từng pixel ③ Không chắc thì <strong>loại cả ảnh</strong>, không đoán</td>
+</tr>
+<tr>
+<td><strong>Phiên bản</strong></td>
+<td>v1.1 · 04/10/2026 · người giữ guideline: Trịnh Nam Trung · trạng thái: <strong>chờ nhóm duyệt</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Mọi nhãn do máy gán nháp <strong>bắt buộc</strong> phải có người mở ra xem và sửa (luật cuộc thi, slide 7). Không có ngoại lệ kiểu "máy tự tin thì bỏ qua".</p>
+</blockquote>
+<nav class="toc" aria-label="Mục lục"><strong>Mục lục</strong><ul>
+<li><a href="#s1">1. Bốn điều cần biết trước khi gán</a></li>
+<li><a href="#s2">2. GreenSM là gì</a></li>
+<li><a href="#s3">3. Cây quyết định</a></li>
+<li><a href="#s4">4. Vẽ hộp thế nào cho đúng</a></li>
+<li><a href="#s5">5. Tình huống đặc biệt</a></li>
+<li><a href="#s6">6. Quy trình duyệt trong CVAT</a></li>
+<li><a href="#s7">7. Nhãn nháp của máy hay sai kiểu nào</a></li>
+<li><a href="#s8">8. Tự kiểm tra và sai số cho phép</a></li>
+<li><a href="#s9">9. Ghi log và báo vướng mắc</a></li>
+<li><a href="#s10">10. Tra nhanh</a></li>
+<li><a href="#pl-a">Phụ lục A. Các quyết định nền và căn cứ</a></li>
+<li><a href="#pl-b">Phụ lục B. Nguồn hình</a></li>
+<li><a href="#changelog">Lịch sử thay đổi</a></li>
+</ul></nav>
+<h2 id="s1">1. Bốn điều cần biết trước khi gán</h2>
+<ol>
+<li><strong>Điểm chấm thưởng hộp ôm sát.</strong> Điểm là mAP@[.5:.95]: mỗi hộp bị chấm ở 10 mức trùng khớp (IoU) từ 0,50 đến 0,95. Hộp rộng thừa khoảng 10% mỗi phía chỉ đạt 4/10 mức (xem <a href="#s4">mục 4</a>).</li>
+<li><strong>Sót một xe GreenSM còn tệ hơn bỏ cả ảnh đó.</strong> Model sẽ học rằng "chiếc xe này là nền". Luôn <strong>quét toàn ảnh</strong> trước khi sang ảnh tiếp theo.</li>
+<li><strong>Không chắc thì loại cả ảnh.</strong> Gặp xe không chắc có phải GreenSM không thì đừng đoán. Ghi ảnh đó vào log với <code>exclude</code> và lý do (<a href="#s9">mục 9</a>). Mất một ảnh rẻ hơn nhiều so với dạy model sai.</li>
+<li><strong>Nhãn nháp của máy thường sai</strong> theo vài kiểu quen thuộc (<a href="#s7">mục 7</a>). Việc của bạn là <strong>sửa</strong>, không phải bấm chấp nhận.</li>
+</ol>
+<h2 id="s2">2. GreenSM là gì</h2>
+<p><strong>GreenSM = ô tô taxi Xanh SM sơn màu XANH NGỌC đặc trưng.</strong> Xe thường phối thêm bạc hoặc xám ở nóc và thân dưới, có chữ "Xanh SM" và logo VinFast.</p>
+<p>Các dấu hiệu nhận biết, xếp theo độ tin cậy:</p>
+<table>
+<thead>
+<tr>
+<th>Dấu hiệu</th>
+<th>Độ tin</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Thân <strong>xanh ngọc</strong> sáng (giữa xanh lá và xanh dương)</td>
+<td>★★★</td>
+<td>Dấu hiệu chính. Nhìn được cả ở xe rất xa</td>
+</tr>
+<tr>
+<td>Chữ <strong>"Xanh SM"</strong> và logo trên cửa hoặc đầu xe</td>
+<td>★★★</td>
+<td>Chỉ đọc được khi xe ở gần</td>
+</tr>
+<tr>
+<td>Phối <strong>bạc/xám</strong> ở nóc hoặc dải thân dưới</td>
+<td>★★</td>
+<td>Có ở hầu hết xe</td>
+</tr>
+<tr>
+<td>Dáng VinFast (VF e34, VF 5, VF 8, Limo Green…)</td>
+<td>★</td>
+<td>Xe cá nhân VinFast cùng dáng nhưng khác màu thì <strong>không</strong> gán</td>
+</tr>
+<tr>
+<td>Biển số vàng</td>
+<td>✗</td>
+<td><strong>Không dùng.</strong> Xe kinh doanh vận tải nào cũng biển vàng</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Xe ở xa, không đọc được chữ:</strong> chỉ cần thân đúng màu xanh ngọc và nhìn ra khối ô tô khi zoom là đủ để gán. Không bắt buộc thấy logo.</p>
+<figure><a href="img/01_greensm_gallery.jpg" target="_blank" title="Mở ảnh cỡ gốc"><img src="img/01_greensm_gallery.jpg" alt="Các góc nhìn của GreenSM cần gán" loading="lazy"></a><figcaption>Các góc nhìn của GreenSM cần gán · bấm để phóng to</figcaption></figure>
+<h3 id="s2-1">2.1. Dễ nhầm nhưng KHÔNG phải GreenSM</h3>
+<p>Không vẽ gì lên những xe có viền đỏ nét đứt dưới đây. Ảnh chỉ có những xe này thì vẫn giữ lại làm <strong>ảnh nền</strong> (file nhãn rỗng). Ảnh nền rất có ích vì nó dạy model "đừng báo nhầm".</p>
+<figure><a href="img/02_not_greensm.jpg" target="_blank" title="Mở ảnh cỡ gốc"><img src="img/02_not_greensm.jpg" alt="Các xe dễ nhầm" loading="lazy"></a><figcaption>Các xe dễ nhầm · bấm để phóng to</figcaption></figure>
+<blockquote class="warn"><p>⚠️ Xe dễ nhầm và xe GreenSM thường <strong>đứng ngay cạnh nhau</strong>, như 3 hình có hộp xanh ở trên. Bỏ qua xe dễ nhầm, nhưng xe GreenSM bên cạnh vẫn phải gán.</p>
+</blockquote>
+<p>Ngoài ra cũng <strong>không gán</strong>:</p>
+<ul>
+<li>xe buýt (kể cả VinBus màu xanh);</li>
+<li>xe tải, xe máy, xe đạp, người mặc áo xanh Xanh SM;</li>
+<li>xe in trên poster, biển quảng cáo, màn hình;</li>
+<li>hình phản chiếu trên kính hoặc vũng nước.</li>
+</ul>
+<h3 id="s2-2">2.2. Vùng xám: xe Xanh SM màu bạc</h3>
+<figure><a href="img/03_grayzone_silver_sm.jpg" target="_blank" title="Mở ảnh cỡ gốc"><img src="img/03_grayzone_silver_sm.jpg" alt="Xe bạc có chữ SM" loading="lazy"></a><figcaption>Xe bạc có chữ SM · bấm để phóng to</figcaption></figure>
+<p>Xe <strong>màu bạc/trắng</strong> có chữ "SM" hoặc số hiệu trên cửa (như SMP004) không sơn xanh ngọc, nên chưa rõ có được tính là GreenSM hay không. Quy tắc:</p>
+<ul>
+<li><strong>Loại cả ảnh:</strong> ghi <code>exclude</code> với lý do <code>xe bac SM</code> vào log.</li>
+<li>Không gán xe đó, và cũng <strong>không</strong> giữ ảnh làm ảnh nền. Nếu giữ làm nền, model sẽ học rằng xe đó chắc chắn không phải GreenSM.</li>
+</ul>
+<h2 id="s3">3. Cây quyết định</h2>
+<pre class="mermaid">flowchart TD
+  A[&quot;Thấy một chiếc xe trong ảnh&quot;] --&gt; B{&quot;Ô tô 4 bánh?&quot;}
+  B -- &quot;Không: xe máy, xe đạp, người&quot; --&gt; N1[&quot;KHÔNG gán&quot;]
+  B -- &quot;Có&quot; --&gt; C{&quot;Thân sơn XANH NGỌC kiểu Xanh SM?&quot;}
+  C -- &quot;Không: vàng, trắng, đỏ, xanh dương, xanh rêu&quot; --&gt; N2[&quot;KHÔNG gán, ảnh vẫn giữ làm nền&quot;]
+  C -- &quot;Bạc hoặc trắng nhưng có chữ SM&quot; --&gt; X[&quot;VÙNG XÁM: loại cả ảnh, ghi exclude&quot;]
+  C -- &quot;Có&quot; --&gt; D{&quot;Zoom 300-400%: thấy rõ thân xanh ngọc và khối ô tô?&quot;}
+  D -- &quot;Không chắc&quot; --&gt; X
+  D -- &quot;Chắc&quot; --&gt; E{&quot;Xe thật trên đường? Không phải poster hay phản chiếu&quot;}
+  E -- &quot;Poster hoặc phản chiếu&quot; --&gt; N3[&quot;KHÔNG gán&quot;]
+  E -- &quot;Xe thật&quot; --&gt; F[&quot;Vẽ 1 hộp ôm sát PHẦN NHÌN THẤY, tính cả gương và lốp&quot;]
+</pre>
+<h2 id="s4">4. Vẽ hộp thế nào cho đúng</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Quy tắc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1</td>
+<td><strong>Bốn mép hộp chạm đúng pixel ngoài cùng nhìn thấy của xe</strong>: mũi xe, đuôi xe, điểm cao nhất của nóc, điểm thấp nhất của lốp chạm đất.</td>
+</tr>
+<tr>
+<td>R2</td>
+<td><strong>Tính cả gương chiếu hậu</strong>, ăng-ten ngắn, đèn trên nóc, cửa xe đang mở. <strong>Không tính</strong> bóng xe trên mặt đường, vệt đèn chiếu xuống đường.</td>
+</tr>
+<tr>
+<td>R3</td>
+<td><strong>Bị che thì chỉ ôm phần nhìn thấy.</strong> Không ước lượng phần bị che. Vật che nằm giữa xe (người, cột) thì hộp vẫn kéo từ pixel nhìn thấy trái nhất tới phải nhất của xe.</td>
+</tr>
+<tr>
+<td>R4</td>
+<td><strong>Bị cắt ở mép ảnh thì hộp dừng ở mép ảnh.</strong></td>
+</tr>
+<tr>
+<td>R5</td>
+<td><strong>Mỗi xe đúng một hộp.</strong> Hai xe đứng sát nhau thì vẽ hai hộp riêng. Hai hộp được phép chồng lên nhau.</td>
+</tr>
+<tr>
+<td>R6</td>
+<td><strong>Xe nhoè do chạy nhanh vẫn gán</strong>, hộp ôm vùng nhoè của thân xe.</td>
+</tr>
+<tr>
+<td>R7</td>
+<td><strong>Ảnh có viền đen</strong> (pillarbox): chỉ gán trong vùng ảnh thật.</td>
+</tr>
+<tr>
+<td>R8</td>
+<td><strong>Xe nhỏ: phóng to 300–400% rồi mới chỉnh mép.</strong></td>
+</tr>
+</tbody>
+</table>
+<figure><a href="img/04_box_tightness.jpg" target="_blank" title="Mở ảnh cỡ gốc"><img src="img/04_box_tightness.jpg" alt="Hộp đúng, hộp lỏng, hộp hụt" loading="lazy"></a><figcaption>Hộp đúng, hộp lỏng, hộp hụt · bấm để phóng to</figcaption></figure>
+<p><strong>Vì sao phải khắt khe với xe nhỏ?</strong> Cùng lệch 3 pixel, xe 26 px mất gần một nửa số ngưỡng chấm, còn xe 300 px gần như không sao:</p>
+<figure><a href="img/05_small_box_precision.jpg" target="_blank" title="Mở ảnh cỡ gốc"><img src="img/05_small_box_precision.jpg" alt="Lệch 3 px ở xe nhỏ và xe lớn" loading="lazy"></a><figcaption>Lệch 3 px ở xe nhỏ và xe lớn · bấm để phóng to</figcaption></figure>
+<blockquote class="info"><p>💡 <strong>IoU là gì?</strong> IoU = diện tích phần hai hộp chồng lên nhau chia cho diện tích hai hộp gộp lại. Hai hộp trùng khít thì IoU = 1. Ở ngưỡng t, hộp được tính là "trúng" nếu IoU ≥ t. Cuộc thi chấm ở 10 ngưỡng 0,50 · 0,55 · … · 0,95. Ví dụ hộp lỏng ở trên có IoU 0,696, nên chỉ trúng 4 ngưỡng (0,50 đến 0,65); chỉ cần sát thêm một chút lên 0,70 là được 5.</p>
+</blockquote>
+<p>Hộp mẫu của BTC ôm từ mũi đến đuôi, từ nóc xuống chân bánh, kể cả khi xe bị nhoè:</p>
+<figure><a href="img/10_btc_reference_blur.jpg" target="_blank" title="Mở ảnh cỡ gốc"><img src="img/10_btc_reference_blur.jpg" alt="Hộp mẫu của BTC" loading="lazy"></a><figcaption>Hộp mẫu của BTC · bấm để phóng to</figcaption></figure>
+<h2 id="s5">5. Tình huống đặc biệt</h2>
+<h3 id="s5-1">5.1. Xe nhỏ ở xa: vẫn gán, kể cả khi tí hon</h3>
+<p>Không có ngưỡng "nhỏ quá thì bỏ qua". Nhận ra được là GreenSM (màu xanh ngọc và khối xe khi zoom) thì gán. Không nhận ra được thì loại ảnh.</p>
+<figure><a href="img/06_small_far_cars.jpg" target="_blank" title="Mở ảnh cỡ gốc"><img src="img/06_small_far_cars.jpg" alt="Xe nhỏ ở xa" loading="lazy"></a><figcaption>Xe nhỏ ở xa · bấm để phóng to</figcaption></figure>
+<h3 id="s5-2">5.2. Bị che một phần: vẫn gán</h3>
+<figure><a href="img/08_partial_occlusion.jpg" target="_blank" title="Mở ảnh cỡ gốc"><img src="img/08_partial_occlusion.jpg" alt="Bị che một phần" loading="lazy"></a><figcaption>Bị che một phần · bấm để phóng to</figcaption></figure>
+<h3 id="s5-3">5.3. Hai xe sát nhau hoặc che nhau: mỗi xe một hộp</h3>
+<p>Xe phía sau chỉ lộ nóc và kính thì vẫn gán, hộp ôm đúng phần lộ ra.</p>
+<figure><a href="img/07_two_cars_occluded.jpg" target="_blank" title="Mở ảnh cỡ gốc"><img src="img/07_two_cars_occluded.jpg" alt="Hai xe che nhau" loading="lazy"></a><figcaption>Hai xe che nhau · bấm để phóng to</figcaption></figure>
+<h3 id="s5-4">5.4. Nhiều GreenSM trong một ảnh, ảnh có viền đen</h3>
+<figure><a href="img/09_multiple_cars_pillarbox.jpg" target="_blank" title="Mở ảnh cỡ gốc"><img src="img/09_multiple_cars_pillarbox.jpg" alt="Nhiều xe, viền đen" loading="lazy"></a><figcaption>Nhiều xe, viền đen · bấm để phóng to</figcaption></figure>
+<h3 id="s5-5">5.5. Các ca khác</h3>
+<table>
+<thead>
+<tr>
+<th>Tình huống</th>
+<th>Quyết định</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Xe đang đỗ ven đường</td>
+<td>Gán như xe đang chạy</td>
+</tr>
+<tr>
+<td>Xe chỉ lộ một mẩu ở mép ảnh</td>
+<td>Nhận ra là GreenSM thì gán, hộp dừng ở mép ảnh (R4). Không nhận ra thì loại ảnh</td>
+</tr>
+<tr>
+<td>Chỉ thấy một mảng nhỏ xanh ngọc giữa ảnh, không thấy khối xe</td>
+<td>Loại ảnh (không chắc)</td>
+</tr>
+<tr>
+<td>Xe trong bóng râm, màu tối hơn</td>
+<td>Vẫn gán nếu nhận ra màu xanh ngọc hoặc chữ Xanh SM</td>
+</tr>
+<tr>
+<td>Khung hình mờ toàn bộ, không phân biệt được xe</td>
+<td>Loại ảnh</td>
+</tr>
+<tr>
+<td>Ảnh có thanh home-indicator iPhone ở đáy</td>
+<td>Bình thường, gán như mọi ảnh</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s6">6. Quy trình duyệt trong CVAT</h2>
+<p><strong>Một ảnh, bốn bước, đúng thứ tự:</strong></p>
+<ol>
+<li><strong>Quét tìm xe bị sót.</strong> Zoom lần lượt các vùng: đường chân trời, sau xe máy, sau cây, sau xe khác, vùng tối. Thấy GreenSM chưa có hộp thì vẽ mới. <em>Đây là lỗi đắt nhất.</em></li>
+<li><strong>Xoá hộp sai:</strong> hộp trên xe không phải GreenSM, hộp trùng.</li>
+<li><strong>Chỉnh mép từng hộp</strong> theo mục 4. Xe nhỏ phải zoom 300–400%.</li>
+<li><strong>Ảnh cần loại</strong> (vùng xám, không chắc): ghi một dòng vào log (<a href="#s9">mục 9</a>) rồi sang ảnh tiếp. <strong>Không cần xoá ảnh khỏi CVAT</strong>: công cụ dựng dữ liệu tự bỏ các ảnh có trong log.</li>
+</ol>
+<p>Duyệt hết job thì bấm <strong>Save</strong>, rồi chuyển trạng thái job sang <em>completed</em> để cả nhóm biết job đã xong.</p>
+<p><strong>Phím tắt CVAT hay dùng:</strong> <code>F</code> ảnh sau · <code>D</code> ảnh trước · <code>N</code> vẽ hộp mới · <code>Del</code> xoá hộp đang chọn · <code>Ctrl+Z</code> hoàn tác · <code>Ctrl+S</code> lưu · lăn chuột để zoom.
+❓ Phím tắt có thể khác giữa các phiên bản CVAT. Nếu không chạy, xem lại ở <strong>Settings → Shortcuts</strong>.</p>
+<p><strong>Tốc độ mục tiêu:</strong> khoảng 3 ảnh/phút. Nếu một ảnh mất quá 1 phút:</p>
+<ul>
+<li>vì <strong>không chắc</strong> có phải GreenSM không: loại ảnh;</li>
+<li>vì ảnh <strong>có nhiều xe</strong>: cứ làm tiếp. Ảnh nhiều xe là ảnh có giá trị nhất.</li>
+</ul>
+<h2 id="s7">7. Nhãn nháp của máy hay sai kiểu nào</h2>
+<p>Đây là các lỗi đã thấy thật khi chạy máy gán nháp lên ảnh mẫu (cam = nháp của máy, xanh = đúng):</p>
+<figure><a href="img/11_prelabel_errors.jpg" target="_blank" title="Mở ảnh cỡ gốc"><img src="img/11_prelabel_errors.jpg" alt="Lỗi nhãn nháp" loading="lazy"></a><figcaption>Lỗi nhãn nháp · bấm để phóng to</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>Lỗi của máy</th>
+<th>Cách sửa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nhận <strong>xe xanh đậm / xanh rêu</strong> là GreenSM</td>
+<td>Xoá</td>
+</tr>
+<tr>
+<td><strong>Gộp 2 xe</strong> đứng sát thành 1 hộp (hình ở <a href="#s5-3">mục 5.3</a>)</td>
+<td>Xoá, vẽ lại 2 hộp</td>
+</tr>
+<tr>
+<td>Hộp nhỏ <strong>dính sang xe bên cạnh</strong></td>
+<td>Xoá</td>
+</tr>
+<tr>
+<td><strong>Nhiều hộp chồng</strong> trên một xe bị che</td>
+<td>Giữ 1 hộp, chỉnh cho đúng, xoá phần còn lại</td>
+</tr>
+<tr>
+<td><strong>Bỏ sót xe nhỏ</strong> hoặc xe bị che</td>
+<td>Vẽ mới (bước 1 ở <a href="#s6">mục 6</a>)</td>
+</tr>
+<tr>
+<td>Hộp đúng xe nhưng <strong>lỏng hoặc hụt</strong> vài pixel</td>
+<td>Kéo mép cho sát</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s8">8. Tự kiểm tra và sai số cho phép</h2>
+<p><strong>Trước khi export, xem lại từng ảnh:</strong></p>
+<ul>
+<li><label><input type="checkbox"> Đã quét toàn ảnh, không còn GreenSM nào thiếu hộp</label></li>
+<li><label><input type="checkbox"> Không có hộp nào trên xe khác màu, xe máy, poster</label></li>
+<li><label><input type="checkbox"> Mỗi xe một hộp, không có hộp trùng</label></li>
+<li><label><input type="checkbox"> Mép hộp sát (xe nhỏ đã zoom để kiểm)</label></li>
+<li><label><input type="checkbox"> Mỗi ảnh vùng xám hoặc không chắc đã có một dòng <code>exclude</code> trong log, tên file đúng từng ký tự</label></li>
+</ul>
+<p><strong>Kiểm cả task:</strong></p>
+<ul>
+<li><label><input type="checkbox"> Đã duyệt hết mọi ảnh trong job, kể cả ảnh không có hộp nháp nào</label></li>
+<li><label><input type="checkbox"> Export đúng định dạng <strong>YOLO 1.1</strong>, đặt tên <code>r1_&lt;tên&gt;.zip</code> (vòng 2 là <code>r2_&lt;tên&gt;.zip</code>)</label></li>
+</ul>
+<p><strong>Sai số cho phép:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Hạng mục</th>
+<th>Mức đạt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mép hộp, xe nhỏ (&lt; 50 px)</td>
+<td>Lệch ≤ 1 px</td>
+</tr>
+<tr>
+<td>Mép hộp, xe lớn</td>
+<td>Lệch ≤ 2–3 px</td>
+</tr>
+<tr>
+<td>Hiệu chuẩn: 3 người vẽ chung 10 ảnh</td>
+<td>IoU giữa hai người bất kỳ ≥ 0,85, số hộp khớp nhau</td>
+</tr>
+<tr>
+<td>Kiểm chéo 15% số ảnh</td>
+<td>≤ 1 xe bị sót trên 20 ảnh</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s9">9. Ghi log và báo vướng mắc</h2>
+<p><strong>Chỉ ghi log cho ảnh bị loại hoặc ảnh cần hỏi.</strong> Ảnh duyệt bình thường không phải ghi gì. Số hộp đã thêm, xoá, chỉnh của từng ảnh do công cụ <code>review_stats.py</code> tự đếm bằng cách so nhãn nháp với file export, nên bạn không phải đếm tay.</p>
+<p><strong><code>logs/labeling_log.csv</code>:</strong></p>
+<pre><code>image,reviewer,action,reason,time
+long_ngatu_1050_f000045.jpg,Long,exclude,xe bac SM,11:40
+cuong_vongxuyen_1040_f000123.jpg,Cuong,exclude,HOI: mang xanh sau xe buyt,11:52
+</code></pre>
+<ul>
+<li><code>image</code>: tên file ảnh, chép đúng từng ký tự (công cụ dựng dữ liệu dựa vào tên này để bỏ ảnh).</li>
+<li><code>action</code> luôn là <code>exclude</code>.</li>
+<li><strong>Gặp ca guideline chưa trả lời:</strong> vẫn ghi <code>exclude</code>, lý do bắt đầu bằng <code>HOI:</code>, rồi nhắn Trung tên ảnh. Trung chốt xong thì bổ sung vào guideline v1.x, có ghi lịch sử thay đổi. Nếu chốt là giữ ảnh, Trung xoá dòng đó khỏi log. <strong>Không tự đặt quy tắc riêng.</strong></li>
+</ul>
+<h2 id="s10">10. Tra nhanh</h2>
+<table>
+<thead>
+<tr>
+<th>Tình huống</th>
+<th>Làm gì</th>
+<th>Không làm</th>
+<th>Loại ảnh?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GreenSM rõ ràng</td>
+<td>Hộp sát, tính gương và lốp</td>
+<td>Hộp lỏng "cho chắc"</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>GreenSM bị che một phần</td>
+<td>Hộp ôm phần nhìn thấy</td>
+<td>Ước lượng phần bị che</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>GreenSM bị cắt ở mép ảnh</td>
+<td>Hộp dừng ở mép ảnh</td>
+<td>—</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>GreenSM nhỏ ở xa</td>
+<td>Zoom 300–400% rồi vẽ</td>
+<td>Bỏ qua vì nhỏ</td>
+<td>Chỉ khi không chắc</td>
+</tr>
+<tr>
+<td>Hai GreenSM sát nhau</td>
+<td>2 hộp riêng</td>
+<td>Gộp 1 hộp</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Xe nhoè</td>
+<td>Hộp ôm vùng nhoè</td>
+<td>Bỏ qua</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>VinFast màu khác, sedan xanh dương, xe xanh rêu</td>
+<td>Không vẽ gì</td>
+<td>Gán "cho an toàn"</td>
+<td>Không (là ảnh nền tốt)</td>
+</tr>
+<tr>
+<td>Xe bạc có chữ SM</td>
+<td>Ghi <code>exclude</code></td>
+<td>Gán, hoặc giữ làm nền</td>
+<td><strong>Có</strong></td>
+</tr>
+<tr>
+<td>Không chắc có phải GreenSM</td>
+<td>Ghi <code>exclude</code></td>
+<td>Đoán</td>
+<td><strong>Có</strong></td>
+</tr>
+<tr>
+<td>Ảnh không có GreenSM</td>
+<td>Không vẽ gì, vẫn phải xem hết ảnh</td>
+<td>Bấm qua không xem</td>
+<td>Không</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pl-a">Phụ lục A. Các quyết định nền và căn cứ</h2>
+<p>Nhóm <strong>tự chốt</strong> các điểm dưới đây, không hỏi BTC. Căn cứ là thể lệ và các guideline 2D của chính khoá học (trợ giảng gán bộ test nhiều khả năng theo cùng quy ước).</p>
+<table>
+<thead>
+<tr>
+<th>Mã</th>
+<th>Quyết định</th>
+<th>Căn cứ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QĐ-01</td>
+<td>Xe bị che: hộp ôm <strong>phần nhìn thấy</strong></td>
+<td>Guideline lab DAY08 (detection xe 2D): <em>"Xe bị xe khác che một phần: Chỉ vẽ box cho phần nhìn thấy"</em>; DAY03: <em>"bbox ôm phần nhìn thấy được"</em>; guideline G01 (Week01): <em>"Bám sát biên vùng có thể quan sát được"</em></td>
+</tr>
+<tr>
+<td>QĐ-02</td>
+<td><strong>Tính gương chiếu hậu</strong></td>
+<td>DAY08: <em>"Vẽ box ôm sát thân xe, tính cả gương và đèn"</em>; ảnh bìa BTC ôm toàn bộ thân xe</td>
+</tr>
+<tr>
+<td>QĐ-03</td>
+<td>Cắt mép: hộp dừng ở mép ảnh</td>
+<td>DAY08: <em>"Xe bị cắt ở mép ảnh: Chỉ vẽ box cho phần nằm trong ảnh"</em></td>
+</tr>
+<tr>
+<td>QĐ-04</td>
+<td>Xe Xanh SM màu bạc: <strong>loại cả ảnh</strong></td>
+<td>Slide 3: GreenSM là <em>"taxi Xanh SM sơn màu xanh đặc trưng"</em>; tài liệu ngữ cảnh mục 3b: <em>"cần quy ước rõ"</em>. Không biết trợ giảng chọn cách nào, nên loại ảnh để model không học theo hướng nào cả</td>
+</tr>
+<tr>
+<td>QĐ-05</td>
+<td>Xe nhỏ: <strong>không có ngưỡng bỏ qua</strong>, nhận ra được thì gán</td>
+<td>Tài liệu ngữ cảnh mục 3b: <em>"cần gán tất cả xe, kể cả xe nhỏ/bị che"</em>; SMP010 có xe <em>"rất nhỏ"</em>. Cách chấm mAP kiểu COCO không có vùng bỏ qua (khác lab DAY08 có ngưỡng 16 px)</td>
+</tr>
+<tr>
+<td>QĐ-06</td>
+<td><strong>Không</strong> dùng ảnh internet và 10 ảnh SMP để train. Ảnh SMP chỉ dùng làm hình minh hoạ trong guideline này</td>
+<td>Slide 7: chỉ <em>"ảnh thô do chính đội thu thập"</em>; ảnh internet <em>"BTC sẽ xác nhận"</em> (chưa có xác nhận)</td>
+</tr>
+<tr>
+<td>QĐ-07</td>
+<td>Không dùng biển vàng để nhận diện</td>
+<td>Biển vàng có trên mọi xe kinh doanh vận tải</td>
+</tr>
+<tr>
+<td>QĐ-08</td>
+<td>Mọi dòng xe Xanh SM sơn xanh ngọc đều gán</td>
+<td>Định nghĩa theo màu sơn (slide 3), không theo dòng xe</td>
+</tr>
+<tr>
+<td>QĐ-09</td>
+<td>Không gán xe buýt, xe tải, xe máy</td>
+<td>Slide 3: <em>"Xe khác (xe con hãng khác, xe buýt, xe tải…) không gán nhãn"</em></td>
+</tr>
+<tr>
+<td>QĐ-10</td>
+<td>Ảnh nền vẫn phải có người xem qua</td>
+<td>Slide 7: cấm <em>"nhãn do model sinh ra mà không kiểm tra lại"</em>; file nhãn rỗng cũng là một nhãn</td>
+</tr>
+<tr>
+<td>QĐ-11</td>
+<td>Xe ở xa: thân xanh ngọc và khối ô tô là đủ, không bắt buộc thấy logo</td>
+<td>Nếu bắt buộc thấy logo thì phải bỏ gần hết xe xa, trái với QĐ-05; xe xanh dương và xanh rêu đã có hình đối chiếu ở mục 2.1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pl-b">Phụ lục B. Nguồn hình</h2>
+<p>Hình ở mục 2 đến mục 7 dựng từ 11 ảnh mẫu trên website cuộc thi (ảnh bìa: Ni.Nguyen.VCLCA, CC BY-SA 4.0, Wikimedia Commons). Hộp do máy gán nháp (YOLOv8x COCO + lọc màu), <strong>có người kiểm và chỉnh tay</strong> (ví dụ SMP003: máy gộp 2 xe, đã tách lại). Script dựng hình: <code>make_figures.py</code>. Các ảnh này <strong>không</strong> dùng để train (QĐ-06).</p>
+<h2 id="changelog">Lịch sử thay đổi</h2>
+<table>
+<thead>
+<tr>
+<th>Phiên bản</th>
+<th>Giờ</th>
+<th>Thay đổi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v1.1</td>
+<td>04/10</td>
+<td>Rà soát chất lượng. <strong>Hình:</strong> hình "dễ nhầm" có 3 xe GreenSM thật chưa có hộp, nay đã đóng hộp xanh và thêm chú thích; hình lỗi nhãn nháp có thêm hộp đúng; số IoU in 3 chữ số (0,696 → 4/10, khớp số ngưỡng). <strong>Quy tắc:</strong> thêm QĐ-11 (xe xa không cần thấy logo), thêm cửa xe mở (R2), xe lộ một mẩu ở mép ảnh, cách xử lý ảnh mất hơn 1 phút. <strong>Quy trình:</strong> log chỉ ghi ảnh <code>exclude</code>, số liệu thêm/xoá/chỉnh do <code>review_stats.py</code> đếm; <code>build_dataset.py</code> tự bỏ ảnh <code>exclude</code> nên không cần xoá trong CVAT. <strong>Định dạng:</strong> chỉ còn bản HTML, có mục lục; sửa link nội bộ bị hỏng ở v1.0.</td>
+</tr>
+<tr>
+<td>v1.0</td>
+<td>04/10 11:00</td>
+<td>Bản đầu tiên</td>
+</tr>
+</tbody>
+</table>
+</main>
+<script type="module">
+// Cây quyết định (mục 3). Không có mạng thì vẫn đọc được dạng chữ.
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+mermaid.initialize({startOnLoad: true, theme: dark ? "dark" : "default", flowchart: {htmlLabels: true}});
+</script>
+</body>
+</html>

@@ -150,7 +150,7 @@
      - xoá hộp sai;
      - kéo mép hộp cho sát;
      - đánh dấu xong.
-  3. Ghi `logs/labeling_log.csv`: ảnh, người duyệt, số hộp nháp, số hộp thêm/sửa/xoá, giờ.
+  3. Ảnh cần loại (vùng xám, không chắc): ghi một dòng `exclude` vào `logs/labeling_log.csv` (guideline mục 9). Số hộp thêm/sửa/xoá do `tools/review_stats.py` tự đếm, không đếm tay.
   4. Chụp 5–10 ảnh màn hình trước/sau khi sửa, lưu vào `evidence/`.
   5. Export dạng "YOLO 1.1" ra `reviewed/r1_<tên>.zip`.
 - **Kết quả:** khoảng 150–300 ảnh có nhãn đã được người kiểm (tốc độ mục tiêu ≥ 3 ảnh/phút/người).
@@ -291,7 +291,7 @@ Khung slide đã dựng dần từ 12:20. Thứ tự slide theo yêu cầu của
 1. **Bài toán và chiến lược:** "Data-centric: dữ liệu giống ảnh test, nhãn đủ và sát, vòng lặp sửa lỗi".
 2. **Thu thập:** số địa điểm, số clip, số khung trước/sau lọc trùng (lấy từ `manifest.csv`), ảnh ví dụ.
 3. **Label guideline:** bảng quy tắc kèm ảnh ca khó (xe bạc, bị che, xe nhỏ, sedan xanh).
-4. **Gán nhãn:** pipeline 2 tầng (COCO + lọc màu) làm nhãn nháp, **người duyệt 100%**, số hộp đã thêm/sửa/xoá (từ `labeling_log.csv`).
+4. **Gán nhãn:** pipeline 2 tầng (COCO + lọc màu) làm nhãn nháp, **người duyệt 100%**, số hộp đã thêm/sửa/xoá (từ `logs/review_stats.csv`).
 5. **QA:** hiệu chuẩn 10 ảnh (IoU giữa các người), kiểm chéo 15% (tỉ lệ lỗi), ảnh trước/sau khi sửa.
 6. **Huấn luyện:** cấu hình, lý do các lựa chọn (scale 0.5, không copy_paste…), val cố định theo địa điểm.
 7. **Các vòng cải thiện:** bảng và biểu đồ v1 → v2 → v3: thay đổi gì, số ảnh, val mAP, điểm public. **Đây là slide quan trọng nhất.**
@@ -312,7 +312,7 @@ Hướng tới **giải Sáng tạo** (S13): kể câu chuyện "model tự tìm
 | 5 | Nộp `submission.zip` có đúng 1 `model.onnx`, ≤ 25 MB, bằng ô cuối | S4, S8, CTX §5 | Chạy Bước 3 nguyên bản, không sửa | `runs/vN/` |
 | 6 | Chỉ dùng ảnh thô đội tự thu | S7 | Chỉ dùng video tự quay | `raw/` + `manifest.csv` |
 | 7 | Cấm bộ dữ liệu gán sẵn (COCO, Open Images, Roboflow, Kaggle) | S7 | Chỉ dùng **trọng số** COCO làm công cụ gán nháp, không dùng ảnh hay nhãn của chúng | Giải trình trên slide |
-| 8 | Cấm nhãn do model sinh mà không kiểm tra lại | S7, S6 | Duyệt 100% ảnh, kể cả ảnh nền, không tự chấp nhận theo conf | `labeling_log.csv`, ảnh chụp CVAT |
+| 8 | Cấm nhãn do model sinh mà không kiểm tra lại | S7, S6 | Duyệt 100% ảnh, kể cả ảnh nền, không tự chấp nhận theo conf | `review_stats.csv`, `labeling_log.csv`, ảnh chụp CVAT |
 | 9 | Cấm dùng nhãn của đội khác, cấm tìm ảnh hoặc nhãn của bộ test | S7 | Không trao đổi dữ liệu với đội khác | — |
 | 10 | Ảnh internet: chờ BTC xác nhận | S7 | Mặc định không dùng. Nếu BTC cho phép thì lưu URL nguồn | `btc_answers.md` |
 | 11 | Tối đa 10 lượt, mỗi lúc chỉ 1 bài chờ chấm | S10, CTX §5 | Lịch nộp ở D4, giữ 3 lượt dự phòng | `metrics.csv` |

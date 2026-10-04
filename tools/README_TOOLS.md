@@ -111,4 +111,16 @@ from google.colab import drive; drive.mount('/content/drive')
 - GreenSM thật (~15 xe): `teal_ratio` 0,32–0,72. Xe xanh đậm/xanh rêu, xe cạnh xe teal: 0,17–0,22.
 - → mặc định `--teal-thresh 0.28`, `--teal-band 0.08` (0,20–0,36 = borderline, duyệt trước).
 - Lỗi nháp còn gặp: hộp gộp 2 xe đứng sát (SMP003), hộp nhỏ dính sang xe xanh dương cạnh xe teal (SMP005),
-  nhiều hộp chồng trên 1 xe bị che (SMP007). Xem `guideline/GUIDELINE_v1.md` mục 7.
+  nhiều hộp chồng trên 1 xe bị che (SMP007). Xem `guideline/GUIDELINE.html` mục 7.
+
+## 7. Sau khi duyệt: loại ảnh và đếm số hộp đã sửa (thêm 04/10, guideline v1.1)
+
+- `build_dataset.py` tự bỏ mọi ảnh có `action=exclude` trong `logs/labeling_log.csv` (tham số `--exclude-log`,
+  mặc định đúng đường dẫn này; truyền `--exclude-log ""` để tắt). Người gán không cần xoá ảnh trong CVAT.
+- `review_stats.py` so nhãn nháp với file export sau duyệt, ghi `logs/review_stats.csv` (mỗi ảnh: số hộp nháp,
+  số hộp cuối, thêm/xoá/chỉnh) và in tổng. Số liệu này dùng cho slide ("người duyệt 100%, sửa X% ảnh").
+
+```bash
+python tools/review_stats.py --prelabels prelabels --reviewed reviewed/r1_cuong.zip reviewed/r1_long.zip reviewed/r1_trung.zip     --image-pool frames --out logs/review_stats.csv
+```
+Ghép hộp nháp với hộp duyệt theo IoU ≥ 0,5; cặp có IoU < 0,98 tính là "chỉnh". Đã thử trên dữ liệu giả, chưa chạy trên dữ liệu thật.
