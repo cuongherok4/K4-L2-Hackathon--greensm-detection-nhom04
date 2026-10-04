@@ -36,7 +36,7 @@ CLASSES = ["GreenSM"]
 
 
 def video_of(stem):
-    m = re.match(r"^(.*)_f\d+$", stem)
+    m = re.match(r"^(.*)_f\d+$", stem) or re.match(r"^(.*)__\d+$", stem)
     return m.group(1) if m else stem
 
 
