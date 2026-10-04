@@ -1,0 +1,15 @@
+# File lớn để trên Drive GSM_T3/, không đưa lên git
+*.pt
+*.onnx
+*.mp4
+*.mov
+*.MOV
+*.HEIC
+raw/
+frames/
+prelabels/
+cvat/
+reviewed/
+datasets/*.zip
+runs/
+__pycache__/
