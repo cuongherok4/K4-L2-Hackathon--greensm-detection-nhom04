@@ -26,36 +26,15 @@
 
 ## GIAI ĐOẠN A — Chuẩn bị và thu thập (10:30 → 11:05)
 
-### A1. Hỏi BTC những điểm luật còn mở
-- **Ai / khi nào:** Trung, ngay bây giờ.
-- **Làm gì:** hỏi 6 câu, theo thứ tự ưu tiên:
-  1. Model gán nháp, người mở từng ảnh duyệt/sửa, có log. Như vậy đã tính là "kiểm tra từng hộp" chưa?
-  2. Xe bị che: hộp ôm phần nhìn thấy hay cả xe? Có tính gương chiếu hậu không?
-  3. Xe Xanh SM màu bạc (ảnh SMP004) có tính là GreenSM không?
-  4. Có được dùng ảnh internet không?
-  5. Có được đưa 10 ảnh mẫu SMP vào train không?
-  6. "Điểm phạt" trên bảng public là gì?
+### A1. Chốt các điểm luật còn mở ✅ XONG 10:50 (đổi cách làm: KHÔNG hỏi BTC)
+- **Quyết định của nhóm:** không hỏi BTC. Các quy ước gán nhãn là một phần của cuộc thi; hỏi hết thì chẳng khác gì biết trước cách gán bộ test.
+- **Đã làm:** tự chốt 11 quyết định (QĐ-01 đến QĐ-11), mỗi quyết định có căn cứ từ thể lệ và các guideline 2D của khoá học (DAY03, DAY08, G01). Xem Phụ lục A của guideline.
+- **Giữ nguyên mặc định an toàn:** KHÔNG dùng ảnh internet, KHÔNG đưa 10 ảnh SMP vào train (QĐ-06). Ảnh SMP chỉ dùng làm hình minh hoạ và để chạy thử pipeline.
+- **Thể lệ:** S7 ("Ảnh tải từ internet: BTC sẽ xác nhận"), S3 (định nghĩa GreenSM).
 
-  Ghi câu trả lời kèm giờ vào `00_guideline/btc_answers.md`.
-- **Kết quả:** guideline khớp với cách trợ giảng gán nhãn bộ test. Biết chắc phạm vi dữ liệu được dùng.
-- **Vì sao:** hộp lệch quy ước so với trợ giảng thì mất điểm ở các ngưỡng IoU 0.75–0.95. Dùng dữ liệu không được phép thì có thể bị loại.
-- **Thể lệ:** S7 ghi "Ảnh tải từ internet: BTC sẽ xác nhận trước giờ G". **Mặc định khi chưa có trả lời: KHÔNG dùng ảnh internet, KHÔNG dùng ảnh SMP.**
-
-### A2. Viết guideline v1
-- **Ai / khi nào:** Trung soạn trong lúc hai bạn đi quay. Cả nhóm chốt trong 5 phút lúc khoảng 11:05.
-- **Làm gì:** viết `00_guideline/guideline_v1.md` theo bảng dưới, mỗi quy tắc kèm 1 ảnh ví dụ.
-
-| Trường hợp | Quy tắc |
-|---|---|
-| Gán | Xe sơn xanh ngọc Xanh SM, kể cả loại phối bạc (ảnh bìa). Nhận biết bằng màu và logo "V Xanh SM", **không dựa vào biển vàng** |
-| Không gán | VinFast màu khác, sedan xanh dương, xe máy hoặc tài xế Xanh SM Bike, xe trên poster, hình phản chiếu |
-| Xe bạc có chữ "SM" | Theo trả lời của BTC. Trong lúc chờ: **loại cả ảnh** |
-| Bị che hoặc cắt mép | Gán nếu còn nhận ra. Hộp ôm phần nhìn thấy (đổi nếu BTC trả lời khác) |
-| Xe nhỏ ở xa | Gán nếu còn thấy màu xanh ngọc và dáng ô tô. **Không chắc thì loại cả ảnh** |
-| Mép hộp | Sát từng pixel, zoom vào khi vẽ xe nhỏ, tính cả gương |
-| Ảnh không có GreenSM | Vẫn phải có người xem. `.txt` rỗng cũng là một nhãn |
-
-- **Kết quả:** một quy ước chung cho 3 người. Đây cũng là một mục bắt buộc của slide.
+### A2. Viết guideline ✅ v1.1 XONG 11:00, chờ nhóm duyệt
+- **Sản phẩm:** `guideline/GUIDELINE.html` trong repo nhóm (bản duy nhất, 11 hình dựng từ ảnh thật, cây quyết định, 8 quy tắc vẽ hộp, quy trình CVAT, checklist, bảng tra nhanh, lịch sử thay đổi).
+- **Còn lại:** cả nhóm đọc trong 5 phút, sau đó hiệu chuẩn 10 ảnh (B4). Chỗ nào lệch thì Trung sửa thành v1.2 và ghi vào lịch sử thay đổi.
 - **Vì sao:**
   - 3 người vẽ 3 kiểu thì model học kiểu trung bình, hộp không sát.
   - Xe GreenSM bị sót nhãn thì model học rằng "chỗ này là nền".
@@ -314,7 +293,7 @@ Hướng tới **giải Sáng tạo** (S13): kể câu chuyện "model tự tìm
 | 7 | Cấm bộ dữ liệu gán sẵn (COCO, Open Images, Roboflow, Kaggle) | S7 | Chỉ dùng **trọng số** COCO làm công cụ gán nháp, không dùng ảnh hay nhãn của chúng | Giải trình trên slide |
 | 8 | Cấm nhãn do model sinh mà không kiểm tra lại | S7, S6 | Duyệt 100% ảnh, kể cả ảnh nền, không tự chấp nhận theo conf | `review_stats.csv`, `labeling_log.csv`, ảnh chụp CVAT |
 | 9 | Cấm dùng nhãn của đội khác, cấm tìm ảnh hoặc nhãn của bộ test | S7 | Không trao đổi dữ liệu với đội khác | — |
-| 10 | Ảnh internet: chờ BTC xác nhận | S7 | Mặc định không dùng. Nếu BTC cho phép thì lưu URL nguồn | `btc_answers.md` |
+| 10 | Ảnh internet: chờ BTC xác nhận | S7 | Không dùng (QĐ-06) | Guideline, Phụ lục A |
 | 11 | Tối đa 10 lượt, mỗi lúc chỉ 1 bài chờ chấm | S10, CTX §5 | Lịch nộp ở D4, giữ 3 lượt dự phòng | `metrics.csv` |
 | 12 | Chọn tối đa 2 bài final trước giờ đóng nộp | S10, S14 | Chốt lúc 15:20 | Ảnh chụp màn hình |
 | 13 | Lưu ảnh gốc, nhật ký gán nhãn, ảnh chụp màn hình, ghi chú QA ngay từ đầu | S7, S14 | Drive `GSM_T3/` dựng ngay ở A3 | Toàn bộ thư mục |
